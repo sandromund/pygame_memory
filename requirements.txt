@@ -1,2 +1,4 @@
 pygame
 PyYAML
+icecream
+numpy

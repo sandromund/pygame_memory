@@ -1,6 +1,9 @@
 import random
 from typing import List
+
+import numpy as np
 import pygame
+from icecream import ic
 
 
 class Game:
@@ -11,25 +14,30 @@ class Game:
         self.card_back = config.get("back_color_card")
         self.card_front = config.get("front_color_card")
         self.tile_size = config.get("tile_size")
+        self.n_cards = self.board_size ** 2
 
         self.port_to_protocol = ports
         self.protocol_to_port = {v: k for k, v in ports.items()}
+        self.mapper = self.get_mapper()
+
         self.n_pairs = len(ports.items())
-        self.board = self.init_board()
         self.flipped = [[True] * self.board_size] * self.board_size
 
-    def init_board(self) -> List[List[str]]:
-        board = [["0"] * self.board_size] * self.board_size
-        cards = list(self.port_to_protocol.values()) + \
-                list(self.protocol_to_port.values())
-        random.shuffle(cards)
-        print(cards)
-        card_index = 0
-        for i in range(self.board_size):
-            for j in range(self.board_size):
-                board[i][j] = cards[card_index]
-                card_index += 1
-        return board
+        self.board = np.arange(self.n_cards)
+        np.random.shuffle(self.board)
+        self.board = self.board.reshape((self.board_size, self.board_size))
+        ic(self.board)
+
+    def get_mapper(self):
+        mapper = {}
+        int_index = 0
+        for port in self.port_to_protocol.values():
+            mapper[int_index] = port
+            int_index += 1
+        for protocol in self.protocol_to_port.values():
+            mapper[int_index] = protocol
+            int_index += 1
+        return mapper
 
     def draw_board(self, surface):
         for i in range(self.board_size):
@@ -48,7 +56,7 @@ class Game:
                              color=self.card_front,
                              rect=card_rect)
             font = pygame.font.Font(None, 36)
-            tile_value = str(self.board[i][j])
+            tile_value = str(self.mapper.get(self.board[i][j]))
             text = font.render(tile_value, True, (0, 0, 0))
             text_rect = text.get_rect(center=(j * self.tile_size + self.tile_size // 2,
                                               i * self.tile_size + self.tile_size // 2))
