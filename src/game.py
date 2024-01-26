@@ -22,6 +22,9 @@ class Game:
         self.flipped = np.zeros(self.n_cards, dtype=bool)
         self.flipped = self.flipped.reshape((self.board_size, self.board_size))
 
+        self.solved = np.zeros(self.n_cards, dtype=bool)
+        self.solved = self.solved.reshape((self.board_size, self.board_size))
+
         self.board = np.arange(self.n_cards)
         np.random.shuffle(self.board)
         self.board = self.board.reshape((self.board_size, self.board_size))
@@ -43,6 +46,9 @@ class Game:
                 self.draw_card(surface, i, j)
 
     def draw_card(self, surface, i, j):
+
+        if self.solved[i,j]:
+            return
 
         card_rect = (j * self.tile_size,
                      i * self.tile_size,
