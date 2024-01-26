@@ -1,20 +1,21 @@
-import random
-from typing import List
-
 import numpy as np
 import pygame
-from icecream import ic
 
 
 class Game:
 
-    def __init__(self, ports: dict, config: dict):
+    def __init__(self, ports: dict, config: dict,
+                 img_back,
+                 img_front):
         self.config = config
         self.board_size = config.get("board_size")
         self.card_back = config.get("back_color_card")
         self.card_front = config.get("front_color_card")
         self.tile_size = config.get("tile_size")
+        self.text_color = config.get("test_color")
         self.n_cards = self.board_size ** 2
+        self.img_back = img_back
+        self.img_front = img_front
 
         self.port_to_protocol = ports
         self.protocol_to_port = {v: k for k, v in ports.items()}
@@ -68,14 +69,13 @@ class Game:
                              rect=card_rect)
             font = pygame.font.Font(None, 36)
             tile_value = str(self.index_mapper.get(self.board[i][j]))
-            text = font.render(tile_value, True, (0, 0, 0))
+            text = font.render(tile_value, True, self.text_color)
             text_rect = text.get_rect(center=(j * self.tile_size + self.tile_size // 2,
                                               i * self.tile_size + self.tile_size // 2))
+            surface.blit(self.img_front, card_rect)
             surface.blit(text, text_rect)
         else:
-            pygame.draw.rect(surface=surface,
-                             color=self.card_back,
-                             rect=card_rect)
+            surface.blit(self.img_back, card_rect)
 
     def filp_card(self, screen_position):
         x, y = screen_position
@@ -83,6 +83,8 @@ class Game:
         y_new = int(y // self.tile_size)
         x_new = min(max(0, x_new), self.tile_size)
         y_new = min(max(0, y_new), self.tile_size)
+        if self.flipped[y_new][x_new]:
+            return
         self.flipped[y_new][x_new] = not self.flipped[y_new][x_new]
         card = None
         card_position = (x_new, y_new)
@@ -106,8 +108,8 @@ class Game:
                 is_pair_result = self.is_pair(card_1=self.first_card_value,
                                               card_2=self.second_card_value)
                 if is_pair_result:
-                    self.solved[self.first_card_position[0], self.first_card_position[1]] = True
-                    self.solved[self.second_card_position[0], self.second_card_position[1]] = True
+                    self.solved[self.first_card_position[1], self.first_card_position[0]] = True
+                    self.solved[self.second_card_position[1], self.second_card_position[0]] = True
 
     def is_pair(self, card_1, card_2):
         return self.mapper.get(card_1) == card_2
