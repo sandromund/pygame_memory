@@ -4,6 +4,7 @@ import yaml
 import json
 
 from src.game import Game
+from icecream import ic
 
 CONFIG_FILE = "config.yaml"
 PORTS_FILE = "ports.json"
@@ -29,7 +30,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_buttons = pygame.mouse.get_pressed()
             game.filp_card(event.pos)
     pygame.display.flip()
 
