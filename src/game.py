@@ -16,6 +16,7 @@ class Game:
         self.n_cards = self.board_size ** 2
         self.img_back = img_back
         self.img_front = img_front
+        self.score = 0
 
         self.port_to_protocol = ports
         self.protocol_to_port = {v: k for k, v in ports.items()}
@@ -107,6 +108,7 @@ class Game:
                 self.second_card_position = card_position
                 is_pair_result = self.is_pair(card_1=self.first_card_value,
                                               card_2=self.second_card_value)
+                self.score += 1
                 if is_pair_result:
                     self.solved[self.first_card_position[1], self.first_card_position[0]] = True
                     self.solved[self.second_card_position[1], self.second_card_position[0]] = True

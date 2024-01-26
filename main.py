@@ -31,6 +31,7 @@ game = Game(ports=ports, config=config, img_front=img_front, img_back=img_back)
 
 running = True
 while running:
+    pygame.display.set_caption(config.get("game_title") + " - Try: " + str(game.score))
     screen.fill(tuple(config.get("background_color")))
     game.draw_board(screen)
     for event in pygame.event.get():
