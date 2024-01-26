@@ -30,8 +30,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_buttons = pygame.mouse.get_pressed()
-            # mouse position event.pos
-            # left click  mouse_buttons[0]
+            game.filp_card(event.pos)
     pygame.display.flip()
 
 pygame.quit()

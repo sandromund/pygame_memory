@@ -15,18 +15,16 @@ class Game:
         self.card_front = config.get("front_color_card")
         self.tile_size = config.get("tile_size")
         self.n_cards = self.board_size ** 2
-
         self.port_to_protocol = ports
         self.protocol_to_port = {v: k for k, v in ports.items()}
         self.mapper = self.get_mapper()
 
-        self.n_pairs = len(ports.items())
-        self.flipped = [[True] * self.board_size] * self.board_size
+        self.flipped = np.zeros(self.n_cards, dtype=bool)
+        self.flipped = self.flipped.reshape((self.board_size, self.board_size))
 
         self.board = np.arange(self.n_cards)
         np.random.shuffle(self.board)
         self.board = self.board.reshape((self.board_size, self.board_size))
-        ic(self.board)
 
     def get_mapper(self):
         mapper = {}
@@ -65,3 +63,11 @@ class Game:
             pygame.draw.rect(surface=surface,
                              color=self.card_back,
                              rect=card_rect)
+
+    def filp_card(self, screen_position):
+        x, y = screen_position
+        x_new = int(x // self.tile_size)
+        y_new = int(y // self.tile_size)
+        x_new = min(max(0, x_new), self.tile_size)
+        y_new = min(max(0, y_new), self.tile_size)
+        self.flipped[y_new][x_new] = not self.flipped[y_new][x_new]
