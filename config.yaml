@@ -1,3 +1,6 @@
-window_size: 1000
-background_color: !!python/tuple [0, 0, 0]
-game_title : Memory Game
+game_title: Memory Game
+background_color: !!python/tuple [ 0, 0, 0 ]
+back_color_card: !!python/tuple [ 0, 0, 205 ]
+front_color_card: !!python/tuple [ 173,216,230 ]
+board_size: 6
+tile_size : 150
